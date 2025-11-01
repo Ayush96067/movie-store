@@ -6,8 +6,13 @@ import Image from "next/image";
 const FALLBACK_IMAGE_PATH = "/src/app/public/Fallback-image.png";
 
 function SearchQuery({ params }) {
+  // Store array of movies comming from omdb database for requested query
   const [movies, setMovies] = useState([]);
+
+  // getting query from params
   const query = params.query;
+
+  // Fetching movies
   useEffect(() => {
     async function fetchMovie() {
       const res = await fetch(`//www.omdbapi.com/?apikey=1596c620&s=${query}`);
@@ -17,6 +22,7 @@ function SearchQuery({ params }) {
     fetchMovie();
   }, [query]);
 
+  // If movies loading, show spinner
   if (movies.length === 0)
     return (
       <div>
@@ -26,10 +32,8 @@ function SearchQuery({ params }) {
 
   return (
     <div className="bg-[#121212] relative">
-      {/* {movies.map((movie) => (
-        <p key={movie.imdbID}>{movie.Title}</p>
-      ))} */}
       <div className=" p-2 lg:p-6  place-items-center grid gap-x-3 gap-y-10 lg:gap-x-3 lg:gap-y-14 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {/* Mapping each individual movie from movies array */}
         {movies.map((movie) => (
           <MovieComponent key={movie.imdbID} movie={movie} />
         ))}
@@ -39,6 +43,7 @@ function SearchQuery({ params }) {
 }
 
 function MovieComponent({ movie }) {
+  // if movie poster is Not Available
   const posterSrc =
     movie.Poster && movie.Poster !== "N/A" ? movie.Poster : FALLBACK_IMAGE_PATH;
 
@@ -50,7 +55,7 @@ function MovieComponent({ movie }) {
           alt={movie.Title}
           fill
           className="object-cover"
-          sizes="(max-width: 600px) 100vw, 300px" // Recommended for performance
+          sizes="(max-width: 600px) 100vw, 300px"
         />
       </div>
       <div className="text-center">

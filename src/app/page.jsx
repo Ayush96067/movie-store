@@ -9,8 +9,7 @@ function Home() {
   // Initial welcome text
   const [showIntial, setShowInitial] = useState(
     // check if user has already using website or not
-    // typeof window !== "undefined" && !sessionStorage.getItem(SESSION_KEY)
-    true
+    typeof window !== "undefined" && !sessionStorage.getItem(SESSION_KEY)
   );
 
   // Fading animation for initial text
@@ -44,6 +43,7 @@ function Home() {
   return (
     <div className="h-[100%]">
       {showIntial ? (
+        // Splash screen Text
         <div className="flex bg-black  flex-col min-h-screen justify-center items-center">
           <div
             className={`transition-opacity duration-[.5s] ease-in-out p-1 text-4xl text md:text-5xl lg:text-7xl font-bold text-center ${
@@ -59,6 +59,7 @@ function Home() {
           </div>
         </div>
       ) : (
+        // Main content after the Text
         <div className="flex flex-col bg-[url('./public/bg-image.jpg')]  bg-cover bg-center min-h-screen justify-center items-center">
           <MainContent setQuery={setQuery} query={query} />
         </div>
@@ -69,6 +70,8 @@ function Home() {
 
 function MainContent({ setQuery, query }) {
   const router = useRouter();
+
+  // Handle form submit
   function handleSubmit(e) {
     e.preventDefault();
     router.push(`/search/${query}`);
