@@ -10,9 +10,7 @@ function SearchQuery({ params }) {
   const query = params.query;
   useEffect(() => {
     async function fetchMovie() {
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=1596c620&s=${query}`
-      );
+      const res = await fetch(`//www.omdbapi.com/?apikey=1596c620&s=${query}`);
       const data = await res.json();
       setMovies(data.Search);
     }
