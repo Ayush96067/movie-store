@@ -24,26 +24,33 @@ function Movie({ params }) {
   const imdbId = params.id;
 
   // custom hook for getting details of movie
-  const { movie } = useMovieDetail(imdbId);
+  const { movie, isLoading } = useMovieDetail(imdbId);
 
-  console.log(movie);
+  // Early return for loading state
+  if (isLoading || !movie) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
-  // Destructuring movie
+  // Destructuring movie with fallback values
   const {
-    imdbID,
-    Actors,
-    Awards,
-    Country,
-    Director,
-    Genre,
-    Plot,
-    Poster,
-    Released,
-    Runtime,
-    Title,
-    Writer,
-    imdbRating,
-    imdbVotes,
+    imdbID = "",
+    Actors = "N/A",
+    Awards = "N/A",
+    Country = "N/A",
+    Director = "N/A",
+    Genre = "N/A",
+    Plot = "N/A",
+    Poster = "/placeholder-movie.jpg", // You should add a placeholder image
+    Released = "N/A",
+    Runtime = "N/A",
+    Title = "Movie Title",
+    Writer = "N/A",
+    imdbRating = "N/A",
+    imdbVotes = "N/A",
   } = movie;
 
   return (
