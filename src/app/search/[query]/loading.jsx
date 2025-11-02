@@ -1,12 +1,8 @@
 function Loading() {
   return (
-    <div className="flex justify-center items-center min-h-screen w-full">
+    <div className="flex min-h-screen w-full items-center justify-center">
       <div className="flex justify-center">
-        <div
-          className="w-16 h-16 border-4 border-blue-500
-                        border-t-transparent rounded-full 
-                        animate-spin"
-        ></div>
+        <div className="h-16 w-16 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
       </div>
     </div>
   );
