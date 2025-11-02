@@ -28,16 +28,11 @@ function Movie({ params }) {
 
   // Early return for loading state
   if (isLoading || !movie) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-purple-500"></div>
-      </div>
-    );
+    return;
   }
 
   // Destructuring movie with fallback values
   const {
-    imdbID = "",
     Actors = "N/A",
     Awards = "N/A",
     Country = "N/A",
@@ -116,7 +111,7 @@ function Movie({ params }) {
                 <CiTimer /> Runtime : {Runtime}
               </StyledPara>
             </div>
-            <AddRemoveFav movieID={imdbID} className={"p-4"} />
+            <AddRemoveFav movieID={imdbId} className={"p-4"} />
           </div>
         </div>
       </div>

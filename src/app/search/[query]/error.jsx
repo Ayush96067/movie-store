@@ -1,9 +1,8 @@
-"use client"; // Error components must be Client Components
+"use client";
 
+import { Error as ErrorComponent } from "@/app/component/Error";
+
+// Error components must be Client Components
 export default function Error({ error }) {
-  return (
-    <div className="flex flex-col h-screen justify-center items-center">
-      <h2 className="text-[1.8rem]">{error}</h2>
-    </div>
-  );
+  return <ErrorComponent error={"Something went wrong"} />;
 }

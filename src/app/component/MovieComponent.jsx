@@ -3,14 +3,14 @@
 import Image from "next/image";
 import Button from "./Button";
 import { useRouter } from "next/navigation";
-import { useMovieContext } from "../context/MovieContext";
 import AddRemoveFav from "./AddRemoveFav";
+
+const FALLBACK_IMAGE_PATH = process.env.NEXT_PUBLIC_FALLBACK_IMAGE_PATH;
 
 // Component to render individual movie card
 export default function MovieComponent({ movie }) {
   const router = useRouter();
-  const { addFavourite, removeFavourite, isFavourite, isLoading } =
-    useMovieContext();
+
   // Use fallback image if movie poster is not available
   const posterSrc =
     movie.Poster && movie.Poster !== "N/A" ? movie.Poster : FALLBACK_IMAGE_PATH;
@@ -42,20 +42,6 @@ export default function MovieComponent({ movie }) {
           onHandleClick={onHandleClick}
         />
       </div>
-      {/* <div className="flex">
-        {!isFavourite(movie.imdbID) && (
-          <Button
-            onHandleClick={() => addFavourite(movie.imdbID)}
-            text={isLoading ? <p>Adding...</p> : "Add to favourites"}
-          />
-        )}
-        {isFavourite(movie.imdbID) && (
-          <Button
-            onHandleClick={() => removeFavourite(movie.imdbID)}
-            text={"Remove"}
-          />
-        )}
-      </div> */}
       <AddRemoveFav movieID={movie.imdbID} />
     </div>
   );

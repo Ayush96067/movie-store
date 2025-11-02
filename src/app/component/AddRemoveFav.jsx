@@ -4,7 +4,7 @@ import Button from "./Button";
 function AddRemoveFav({ movieID, className }) {
   const { addFavourite, removeFavourite, isFavourite, isLoading } =
     useMovieContext();
-
+  
   return (
     <div className="flex">
       {/* Add to favourite if not added */}

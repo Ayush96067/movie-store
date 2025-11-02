@@ -2,6 +2,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
 import { MovieProvider } from "./context/MovieContext";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,18 +27,20 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MovieProvider>
-          {/* Logo of App : To be visible throught the website */}
-          <div className="w-full bg-black p-5">
-            <Link
-              href={"/"}
-              className="left-2 w-fit cursor-pointer rounded-full p-3 text-base text-white hover:text-gray-200 lg:text-xl"
-            >
-              MovieStore
-            </Link>
-          </div>
-          {children}
-        </MovieProvider>
+        <Suspense fallback={<Loading />}>
+          <MovieProvider>
+            {/* Logo of App : To be visible throught the website */}
+            <div className="w-full bg-black p-5">
+              <Link
+                href={"/"}
+                className="left-2 w-fit cursor-pointer rounded-full p-3 text-base text-white hover:text-gray-200 lg:text-xl"
+              >
+                MovieStore
+              </Link>
+            </div>
+            {children}
+          </MovieProvider>
+        </Suspense>
       </body>
     </html>
   );

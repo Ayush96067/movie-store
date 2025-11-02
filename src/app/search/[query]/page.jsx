@@ -3,18 +3,14 @@
 
 // Import necessary React hooks and components
 import { useState } from "react";
+
 // Import icons for UI elements
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
-
-// Import custom components and Next.js components
-import Image from "next/image";
-import Error from "./error";
-import { useRouter } from "next/navigation";
-import Button from "@/app/component/Button";
 
 // Import custom hook
 import useMovieSearch from "@/hooks/useMovieSearch";
 import MovieComponent from "@/app/component/MovieComponent";
+import Error from "@/app/component/Error";
 
 // Fallback image path for movies without posters
 const FALLBACK_IMAGE_PATH = process.env.NEXT_PUBLIC_FALLBACK_IMAGE_PATH;
@@ -32,13 +28,11 @@ function SearchQuery({ params }) {
     page,
   );
 
+  console.log(movies);
+
   // Show error component for no results
   if (noResults)
-    return (
-      <div className="p-4 text-center text-white">
-        No results found or too many results
-      </div>
-    );
+    return <Error error={"No results found or too many results"} />;
 
   // Show error component for API failures
   if (hasError)
