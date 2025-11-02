@@ -1,34 +1,83 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { Suspense, useEffect, useRef, useState } from "react";
 import { FaArrowCircleRight } from "react-icons/fa";
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
+
 import Loading from "./loading";
 import Image from "next/image";
+import Error from "./error";
 const FALLBACK_IMAGE_PATH = "/src/app/public/Fallback-image.png";
 
 function SearchQuery({ params }) {
   // Store array of movies comming from omdb database for requested query
   const [movies, setMovies] = useState([]);
+  const [noResults, setNoResults] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  const [totalResults, setTotalResults] = useState(0);
+  const [page, setPage] = useState(1);
+  const totalPages = totalResults !== 0 ? Math.floor(totalResults / 10) + 1 : 1;
 
   // getting query from params
   const query = params.query;
 
   // Fetching movies
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+
     async function fetchMovie() {
-      const res = await fetch(`//www.omdbapi.com/?apikey=1596c620&s=${query}`);
-      const data = await res.json();
-      setMovies(data.Search);
+      try {
+        const res = await fetch(
+          `//www.omdbapi.com/?apikey=1596c620&s=${query}&page=${page}`
+        );
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await res.json();
+
+        if (data.Response === "False") {
+          setMovies([]);
+          setNoResults(true);
+          setTotalResults(0);
+        } else if (data.Search) {
+          setMovies(data.Search);
+          if (page == 1) setTotalResults(data.totalResults);
+        } else {
+          // Handle unexpected success (like a non-array response)
+          setHasError(true);
+        }
+
+        setMovies(data.Search);
+      } catch (error) {
+        console.log("Error", error);
+      }
     }
     fetchMovie();
-  }, [query]);
+  }, [query, page]);
 
-  // If movies loading, show spinner
-  if (movies.length === 0)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+  // console.log(totalResults);
+  // console.log("Total query", page * 10);
+  // console.log("Total Pages", totalPages);
+
+  if (noResults)
+    return <Error error={"No results found or Too much Results"} />;
+
+  if (hasError) return <Error error={"Failed to fetch"} />;
+
+  // Pagination
+  function handlePrev() {
+    setPage((page) => (page === 1 ? page : page - 1));
+  }
+  function handleNext() {
+    setPage((page) => (page < totalPages ? page + 1 : page));
+  }
+
+  // Loggin movies
+  // console.log(movies.filter((curr,i,arr)=>curr.id === arr.find()));
 
   return (
     <div className="bg-[#121212] relative">
@@ -37,6 +86,27 @@ function SearchQuery({ params }) {
         {movies.map((movie) => (
           <MovieComponent key={movie.imdbID} movie={movie} />
         ))}
+      </div>
+      <div className="flex justify-center items-center text-2xl p-4 gap-2">
+        <button
+          onClick={handlePrev}
+          className={`${
+            page === 1 ? "hidden" : "visible"
+          } hover:bg-white hover:text-black rounded-full`}
+        >
+          <MdKeyboardArrowLeft className="" />
+        </button>
+        <p>
+          {page}...{totalPages}
+        </p>
+        <button
+          onClick={handleNext}
+          className={` ${
+            page === totalPages ? "hidden" : "visible"
+          }  hover:bg-white hover:text-black rounded-full `}
+        >
+          <MdKeyboardArrowRight />
+        </button>
       </div>
     </div>
   );
@@ -52,7 +122,7 @@ function MovieComponent({ movie }) {
       <div className="relative w-full h-96 overflow-hidden rounded-md">
         <Image
           src={posterSrc}
-          alt={movie.Title}
+          alt={`${movie.Title} poster not loading`}
           fill
           className="object-cover"
           sizes="(max-width: 600px) 100vw, 300px"

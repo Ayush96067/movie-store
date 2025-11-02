@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Logo of App : To be visible throught the website */}
-        <div className=" bg-black w-full p-3">
+        <div className=" bg-black w-full p-5 ">
           <Link
             href={"/"}
             className="cursor-pointer hover:text-gray-200 text-white text-base lg:text-xl left-2 rounded-full p-3 w-fit"
