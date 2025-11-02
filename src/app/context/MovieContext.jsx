@@ -1,4 +1,4 @@
-"use client"; // Essential for using useState and createContext
+"use client";
 
 import {
   createContext,
@@ -8,31 +8,35 @@ import {
   useCallback,
 } from "react";
 
-// Creating Context object
+// Create a Context object
 export const MovieContext = createContext(null);
 
-// Creating Provider component
+// Provider Component
 export function MovieProvider({ children }) {
-  const [favourites, setFavourites] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Initialize favourites from localStorage on mount
-  useEffect(() => {
+  // Store favourites in state and Read initially from localStorage (avoid overwritting localStorage on initial mount)
+  const [favourites, setFavourites] = useState(() => {
     try {
+      // raw JSON string or null
       const raw = localStorage.getItem("favourites");
+
       if (raw) {
+        // parse stored JSON
         const parsed = JSON.parse(raw);
-        // normalize to strings to avoid type mismatch
-        if (Array.isArray(parsed)) setFavourites(parsed.map(String));
+        // normalize IDs to strings
+        if (Array.isArray(parsed)) return parsed.map(String);
       }
     } catch (e) {
-      // ignore JSON errors
       // eslint-disable-next-line no-console
-      console.error("Failed to read favourites from localStorage", e);
+      console.error("Failed to read favourites from localStorage (init)", e);
     }
-  }, []);
+    return [];
+  });
 
-  // Persist favourites to localStorage whenever it changes
+  // Flag to indicate an add/remove is in progress.
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Whenever `favourites` changes, persist the new array to localStorage.
+  // We stringify the array because localStorage only stores strings.
   useEffect(() => {
     try {
       localStorage.setItem("favourites", JSON.stringify(favourites));
@@ -42,27 +46,36 @@ export function MovieProvider({ children }) {
     }
   }, [favourites]);
 
-  // Add a movie id to favourites (stores ids as strings)
+  // Add a movie id to favourites. The id is normalized to a string to
+  // avoid mismatches between numbers and strings. The setter uses the
+  // functional form to avoid stale closures.
   const addFavourite = useCallback((movieId) => {
+    // If invalid ids
     if (movieId === undefined || movieId === null) return;
+
+    // Normalize to string - avoid mismatches between numbers and strings
     const id = String(movieId);
     setIsLoading(true);
     setFavourites((prev) => {
-      if (prev.includes(id)) return prev; // already present
+      // Prevent duplicate entries
+      if (prev.includes(id)) return prev;
+      // Append
       return [...prev, id];
     });
     setIsLoading(false);
   }, []);
 
-  // Remove a movie id from favourites
+  // Remove a movie id from favourites.
   const removeFavourite = useCallback((movieId) => {
     if (movieId === undefined || movieId === null) return;
     const id = String(movieId);
     setIsLoading(true);
+    // remove
     setFavourites((prev) => prev.filter((x) => x !== id));
     setIsLoading(false);
   }, []);
 
+  // Helper to check if a movie id already in favourites.
   const isFavourite = useCallback(
     (movieId) => favourites.includes(String(movieId)),
     [favourites],
@@ -83,7 +96,7 @@ export function MovieProvider({ children }) {
   );
 }
 
-// 3. Create a custom hook for easy consumption
+// Custom hook
 export function useMovieContext() {
   const context = useContext(MovieContext);
   if (!context) {

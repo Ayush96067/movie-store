@@ -4,21 +4,16 @@ import { useMovieContext } from "../context/MovieContext";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Loading from "./loading";
 
-// function FavouritesPage() {
-//   const { favourites } = useMovieContext();
-//   console.log(favourites);
-
-//   return <p>Favpage</p>;
-// }
+const FALLBACK_BG_IMAGE = process.env.NEXT_PUBLIC_FALLBACK_IMAGE_PATH;
 
 function FavouritesPage() {
   const { favourites } = useMovieContext();
   const [favouriteMovies, setFavouriteMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(favourites);
-
+  //   fetch favourite movies using IDs stored in favourites array in useMovieContext
   useEffect(() => {
     async function fetchFavouriteMovies() {
       setIsLoading(true);
@@ -26,14 +21,16 @@ function FavouritesPage() {
         const apiKey = process.env.NEXT_PUBLIC_OMDB_API_KEY;
         const baseUrl = process.env.NEXT_PUBLIC_OMDB_URL;
 
-        // Fetch details for each favourite movie ID
+        // Fetch details for each favourite movie ID - (returns an array of promises)
         const moviePromises = favourites.map(async (id) => {
           const res = await fetch(`${baseUrl}/?apikey=${apiKey}&i=${id}`);
           if (!res.ok) throw new Error(`Failed to fetch movie ${id}`);
           return res.json();
         });
-
+        // Takes the array of running promises and returns a single new Promise.
         const movies = await Promise.all(moviePromises);
+
+        // store movies
         setFavouriteMovies(movies);
       } catch (error) {
         console.error("Error fetching favourite movies:", error);
@@ -51,11 +48,7 @@ function FavouritesPage() {
   }, [favourites]);
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-purple-500"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (favourites.length === 0) {
@@ -79,15 +72,13 @@ function FavouritesPage() {
           <Link
             key={movie.imdbID}
             href={`/movie/${movie.imdbID}`}
-            className="transform transition-transform hover:scale-105"
+            className="transform transition-transform duration-300 hover:scale-[1.02]"
           >
             <div className="overflow-hidden rounded-lg bg-gray-800 shadow-lg">
               <div className="relative h-[400px]">
                 <Image
                   src={
-                    movie.Poster !== "N/A"
-                      ? movie.Poster
-                      : "/placeholder-movie.jpg"
+                    movie.Poster !== "N/A" ? movie.Poster : FALLBACK_BG_IMAGE
                   }
                   alt={movie.Title}
                   fill
