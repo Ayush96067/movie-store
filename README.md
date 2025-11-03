@@ -1,17 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<!-- Download ZIP file from github link and extract -->
+<!-- run command : > npm i  -->
+<!-- Create a .env.local file in route folder near package.json -->
+<!--
+    NEXT_PUBLIC_OMDB_URL=https://www.omdbapi.com
+    NEXT_PUBLIC_OMDB_API_KEY=1596c620
+    NEXT_PUBLIC_FALLBACK_IMAGE_PATH=/Fallback-image.svg
+ -->
+ <!-- Terminal -> npm run dev -->
 
 ## Getting Started
 
 First, run the development server:
 
-```bash
+<!-- Run -->
+
 npm run dev
+
 # or
+
 yarn dev
+
 # or
+
 pnpm dev
+
 # or
+
 bun dev
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -34,3 +50,4 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```

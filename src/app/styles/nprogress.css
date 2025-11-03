@@ -1,0 +1,10 @@
+/* Customize NProgress bar color */
+#nprogress .bar {
+  background: #9333ea !important; /* Tailwind purple-600 */
+  height: 3px !important;
+}
+
+/* Remove the spinner */
+#nprogress .spinner {
+  display: none !important;
+}

@@ -4,6 +4,9 @@ import Link from "next/link";
 import { MovieProvider } from "./context/MovieContext";
 import { Suspense } from "react";
 import Loading from "./loading";
+import ProgressBar from "./component/ProgressBar";
+import "nprogress/nprogress.css";
+import "./styles/nprogress.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,6 +31,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Suspense fallback={<Loading />}>
+          <ProgressBar />
           <MovieProvider>
             {/* Logo of App : To be visible throught the website */}
             <div className="w-full bg-black p-5">
