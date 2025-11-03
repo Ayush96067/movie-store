@@ -14,34 +14,37 @@ export const MovieContext = createContext(null);
 // Provider Component
 export function MovieProvider({ children }) {
   // Store favourites in state and Read initially from localStorage (avoid overwritting localStorage on initial mount)
-  const [favourites, setFavourites] = useState(() => {
-    try {
-      // raw JSON string or null
-      const raw = localStorage.getItem("favourites");
+  // Initialize with empty array, we'll load from localStorage in useEffect
+  const [favourites, setFavourites] = useState([]);
 
+  // Load favourites from localStorage once we're on the client
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("favourites");
       if (raw) {
-        // parse stored JSON
         const parsed = JSON.parse(raw);
-        // normalize IDs to strings
-        if (Array.isArray(parsed)) return parsed.map(String);
+        if (Array.isArray(parsed)) {
+          setFavourites(parsed.map(String));
+        }
       }
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error("Failed to read favourites from localStorage (init)", e);
+      console.error("Failed to read favourites from localStorage", e);
     }
-    return [];
-  });
+  }, []); // Run once on mount
 
   // Flag to indicate an add/remove is in progress.
   const [isLoading, setIsLoading] = useState(false);
 
   // Whenever `favourites` changes, persist the new array to localStorage.
   // We stringify the array because localStorage only stores strings.
+  // Save to localStorage whenever favourites change
   useEffect(() => {
+    // Skip initial save when favourites is empty
+    if (favourites.length === 0) return;
+
     try {
       localStorage.setItem("favourites", JSON.stringify(favourites));
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error("Failed to save favourites to localStorage", e);
     }
   }, [favourites]);
